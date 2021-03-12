@@ -1,24 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import { Button, Card, Col, Container, FormControl, InputGroup, ListGroupItem, Row } from 'react-bootstrap';
 
-function App() {
+const App = () => { 
+
+  const [todo, setTodo] = useState('');
+  const [todoList, setTodoList] = useState([]);
+  
+  function addClick(){
+    setTodoList([
+      ...todoList,
+      todo
+    ]);
+    setTodo('');
+  }
+
+  function editTodoList(e){
+    if(e.keyCode === 13){
+      addClick();
+    }
+    return;
+  }
+
+  function deleteClick(delKey){
+    // console.log("지울 할일의 id=", key)
+    setTodoList(
+      todoList.filter((one, key, all)=>(key!==delKey))
+    )
+  }
+  
+  // console.log(todoList);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Row>
+        <Col>
+          <h2>Todo List</h2>
+          <InputGroup>
+            <FormControl
+              value = {todo} 
+              onChange = {(e)=>{setTodo(e.target.value)}}
+              onKeyDown = {(e)=>{editTodoList(e)}}
+            />
+            <InputGroup.Append>
+              <Button 
+                onClick = {()=>{addClick()}}
+                variant="outline-secondary">추가</Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {
+            todoList.length > 0 ?
+            todoList.map((one, key, all)=>{
+              return <ListGroupItem onClick = {()=>{deleteClick(key)}} action key = {key}>{one}</ListGroupItem>
+            })
+            :
+            'No List'
+          }
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
